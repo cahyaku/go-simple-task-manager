@@ -14,9 +14,10 @@ import (
 var reader = bufio.NewReader(os.Stdin)
 
 func ReadLine(prompt string) string {
+	// Perulangan terjadi selama iput belum valid
 	for {
 		fmt.Print(prompt)
-		input, _ := reader.ReadString('\n')
+		input, _ := reader.ReadString('\n') // membaca jika tekan enter
 		input = strings.TrimSpace(input)
 
 		if input == "" {

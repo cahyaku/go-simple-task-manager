@@ -14,7 +14,12 @@ func main() {
 
 	for {
 		showMenuList()
-
+		/**
+		 * Kalau pakai scan int error muncul dua kali karena fmt.Scanln tidak membersihkan buffer input ketika:
+		 * user memasukkan huruf atau input tidak sesuai tipe (int).
+		 * Akibatnya Input sisa masih ada di buffer, loop for jalan lagi, Scanln langsung gagal lagi,
+		 * sehingga pesan muncul berulang-ulang.
+		 */
 		//var input int
 		//fmt.Scanln(&input)
 
@@ -24,6 +29,10 @@ func main() {
 			continue
 		}
 
+		/**
+		 * Ini minta iputan kemudian cek secara satu persatu,
+		 * jadi ada pengulangan banyak disetiap func.
+		 */
 		//inputStr := readInput("Enter your choice:")
 		//input, err := strconv.Atoi(inputStr)
 		//
@@ -92,6 +101,15 @@ func addTask(tasks *[]Task) {
 	// kalau pakai scan hanya 1 kata awal yang tersimpan
 	//fmt.Scanln(&taskName)
 
+	/**
+	 * Append digunakan untuk mengubah salian teks
+	 * Append tanpa * hanya valid pada slice biasa, artinya bisa membuat slice baru, tapi tidak perubahan ke main
+	 * maka datanya hilang saat show (alias tidak muncul).
+	 *
+	 * Append dengan * artinya kita sudah memegang alamat slicenya,
+	 * misalnya (*tasks), ini artinya slice asli di main.
+	 * Jadi append ini hasilnya disimpan balik ke slice asli.
+	 */
 	//tasks = append(tasks, Task{Title: taskName, Done: false})
 
 	*tasks = append(*tasks, Task{
@@ -102,10 +120,14 @@ func addTask(tasks *[]Task) {
 }
 
 func showTasks(tasks []Task) {
+	/**
+	 * Ini cek data jika kosong (aslias belum ada data)
+	 */
 	//if len(tasks) == 0 {
 	//	fmt.Println("Empty task list, nothing to show!")
 	//}
 
+	// versi singkat, dijadikan sebiah func
 	if isEmptyTasks(tasks, "show") {
 		return
 	}
@@ -116,6 +138,8 @@ func showTasks(tasks []Task) {
 		if v.Done {
 			taskStatus = "[X]"
 		}
+
+		// Menampilkan hasil list dari tasks
 		//fmt.Printf("%d. %s (done: %t)\n", i+1, v.Title, v.Done)
 		fmt.Printf("%d. %s %s\n", i+1, v.Title, taskStatus)
 	}
@@ -194,11 +218,15 @@ func deleteTask(tasks *[]Task) {
 		fmt.Println("Invalid task id, please try again.")
 		return
 	}
+
 	// Harus pakai append karena slice tidak bisa dihapus langsung
 	*tasks = append((*tasks)[:taskId-1], (*tasks)[taskId:]...)
 	fmt.Println("Successfully deleted task", taskId)
 }
 
+/**
+ * Function to check whether there is data
+ */
 func isEmptyTasks(tasks []Task, action string) bool {
 	if len(tasks) == 0 {
 		fmt.Printf("Empty task list, nothing to %s!\n", action)
