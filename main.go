@@ -18,8 +18,18 @@ func main() {
 
 	for {
 		showMenuList()
-		var input int
-		fmt.Scanln(&input)
+
+		//var input int
+		//fmt.Scanln(&input)
+
+		inputStr := readInput("Enter your choice:")
+		input, err := strconv.Atoi(inputStr)
+
+		if err != nil {
+			fmt.Println("Please input number between 1 and 5 👺")
+			fmt.Println()
+			continue
+		}
 
 		switch input {
 		case 1:
@@ -31,11 +41,11 @@ func main() {
 			fmt.Println()
 
 		case 3:
-			markTaskAsDone(tasks)
+			markTaskAsDone(&tasks)
 			fmt.Println()
 
 		case 4:
-			deleteTask(tasks)
+			deleteTask(&tasks)
 			fmt.Println()
 
 		case 5:
@@ -45,6 +55,7 @@ func main() {
 		default:
 			fmt.Println("Please input number between 1 and 5 👺👺👺👺👺")
 			fmt.Println()
+			continue
 		}
 	}
 }
@@ -62,7 +73,7 @@ func showMenuList() {
 	fmt.Println("3. Mark task as done")
 	fmt.Println("4. Delete task")
 	fmt.Println("5. Exit")
-	fmt.Print("Enter your choice: ")
+	//fmt.Print("Enter your choice: ")
 }
 
 /**
@@ -101,14 +112,14 @@ func showTasks(tasks []Task) {
 	}
 }
 
-func markTaskAsDone(tasks []Task) {
-	if len(tasks) == 0 {
+func markTaskAsDone(tasks *[]Task) {
+	if len(*tasks) == 0 {
 		fmt.Println("Empty task list, nothing to mark as done!")
 		return
 	}
 
 	fmt.Println("===== Mark task as done =====")
-	showTasks(tasks)
+	showTasks(*tasks)
 	//var taskId int
 	//fmt.Println("Enter task id: ")
 	//fmt.Scanln(&taskId)
@@ -121,24 +132,24 @@ func markTaskAsDone(tasks []Task) {
 		return
 	}
 
-	if taskId > len(tasks) || taskId <= 0 {
+	if taskId > len(*tasks) || taskId <= 0 {
 		fmt.Println("Invalid task id, please try again.")
 		return
 	} else {
-		tasks[taskId-1].Done = true
+		(*tasks)[taskId-1].Done = true
 	}
-	fmt.Println(tasks[taskId-1].Title, tasks[taskId-1].Done)
+	fmt.Println((*tasks)[taskId-1].Title, (*tasks)[taskId-1].Done)
 	fmt.Println("Task marked as done successfully ✔")
 }
 
-func deleteTask(tasks []Task) {
-	if len(tasks) == 0 {
+func deleteTask(tasks *[]Task) {
+	if len(*tasks) == 0 {
 		fmt.Println("Empty task list, nothing to delete!")
 		return
 	}
 
 	fmt.Println("===== Delete task =====")
-	showTasks(tasks)
+	showTasks(*tasks)
 	//fmt.Println("Enter task id: ")
 	//var taskId int
 	//fmt.Scanln(&taskId)
@@ -151,21 +162,21 @@ func deleteTask(tasks []Task) {
 		return
 	}
 
-	if taskId > len(tasks) || taskId <= 0 {
+	if taskId > len(*tasks) || taskId <= 0 {
 		fmt.Println("Invalid task id, please try again.")
 		return
 	}
 	// Harus pakai append karena slice tidak bisa dihapus langsung
-	tasks = append(tasks[:taskId-1], tasks[taskId:]...)
+	*tasks = append((*tasks)[:taskId-1], (*tasks)[taskId:]...)
 	fmt.Println("Successfully deleted task", taskId)
 }
 
 /**
  * Ini untuk mendapatkan jumlah inputan lebih dari 1 kata.
  */
-var reader = bufio.NewReader(os.Stdin)
 
 func readInput(prompt string) string {
+	var reader = bufio.NewReader(os.Stdin)
 	fmt.Print(prompt)
 
 	// ini membaca input satu baris penuh
