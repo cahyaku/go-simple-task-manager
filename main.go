@@ -1,11 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
-	"strings"
 )
 
 type Task struct {
@@ -22,14 +18,20 @@ func main() {
 		//var input int
 		//fmt.Scanln(&input)
 
-		inputStr := readInput("Enter your choice:")
-		input, err := strconv.Atoi(inputStr)
-
+		input, err := ReadInt("Enter your choice: ")
 		if err != nil {
 			fmt.Println("Please input number between 1 and 5 👺")
-			fmt.Println()
 			continue
 		}
+
+		//inputStr := readInput("Enter your choice:")
+		//input, err := strconv.Atoi(inputStr)
+		//
+		//if err != nil {
+		//	fmt.Println("Please input number between 1 and 5 👺")
+		//	fmt.Println()
+		//	continue
+		//}
 
 		switch input {
 		case 1:
@@ -83,7 +85,10 @@ func addTask(tasks *[]Task) {
 	fmt.Println("===== Add task =====")
 
 	//var taskName string
-	taskName := readInput("Enter task title: ")
+	//taskName := readInput("Enter task title: ")
+
+	taskName := ReadLine("Enter task title: ")
+
 	// kalau pakai scan hanya 1 kata awal yang tersimpan
 	//fmt.Scanln(&taskName)
 
@@ -97,8 +102,12 @@ func addTask(tasks *[]Task) {
 }
 
 func showTasks(tasks []Task) {
-	if len(tasks) == 0 {
-		fmt.Println("Empty task list, nothing to show!")
+	//if len(tasks) == 0 {
+	//	fmt.Println("Empty task list, nothing to show!")
+	//}
+
+	if isEmptyTasks(tasks, "show") {
+		return
 	}
 
 	fmt.Println("Task list:")
@@ -113,8 +122,12 @@ func showTasks(tasks []Task) {
 }
 
 func markTaskAsDone(tasks *[]Task) {
-	if len(*tasks) == 0 {
-		fmt.Println("Empty task list, nothing to mark as done!")
+	//if len(*tasks) == 0 {
+	//	fmt.Println("Empty task list, nothing to mark as done!")
+	//	return
+	//}
+
+	if isEmptyTasks(*tasks, "mark as done") {
 		return
 	}
 
@@ -124,13 +137,19 @@ func markTaskAsDone(tasks *[]Task) {
 	//fmt.Println("Enter task id: ")
 	//fmt.Scanln(&taskId)
 
-	input := readInput("Enter task id: ")
-	taskId, err := strconv.Atoi(input)
-
+	taskId, err := ReadInt("Enter task id: ")
 	if err != nil {
 		fmt.Println("Task id must be a number.")
 		return
 	}
+
+	//input := readInput("Enter task id: ")
+	//taskId, err := strconv.Atoi(input)
+	//
+	//if err != nil {
+	//	fmt.Println("Task id must be a number.")
+	//	return
+	//}
 
 	if taskId > len(*tasks) || taskId <= 0 {
 		fmt.Println("Invalid task id, please try again.")
@@ -143,8 +162,12 @@ func markTaskAsDone(tasks *[]Task) {
 }
 
 func deleteTask(tasks *[]Task) {
-	if len(*tasks) == 0 {
-		fmt.Println("Empty task list, nothing to delete!")
+	//if len(*tasks) == 0 {
+	//	fmt.Println("Empty task list, nothing to delete!")
+	//	return
+	//}
+
+	if isEmptyTasks(*tasks, "delete") {
 		return
 	}
 
@@ -154,13 +177,18 @@ func deleteTask(tasks *[]Task) {
 	//var taskId int
 	//fmt.Scanln(&taskId)
 
-	input := readInput("Enter task id: ")
-	taskId, err := strconv.Atoi(input)
-
+	taskId, err := ReadInt("Enter task id: ")
 	if err != nil {
 		fmt.Println("Task id must be a number.")
 		return
 	}
+
+	//input := ReadInt("Enter task id: ")
+	//taskId, err := strconv.Atoi(input)
+	//if err != nil {
+	//	fmt.Println("Task id must be a number.")
+	//	return
+	//}
 
 	if taskId > len(*tasks) || taskId <= 0 {
 		fmt.Println("Invalid task id, please try again.")
@@ -171,15 +199,10 @@ func deleteTask(tasks *[]Task) {
 	fmt.Println("Successfully deleted task", taskId)
 }
 
-/**
- * Ini untuk mendapatkan jumlah inputan lebih dari 1 kata.
- */
-
-func readInput(prompt string) string {
-	var reader = bufio.NewReader(os.Stdin)
-	fmt.Print(prompt)
-
-	// ini membaca input satu baris penuh
-	input, _ := reader.ReadString('\n')
-	return strings.TrimSpace(input) // menghapus spasi di awal dan akhir
+func isEmptyTasks(tasks []Task, action string) bool {
+	if len(tasks) == 0 {
+		fmt.Printf("Empty task list, nothing to %s!\n", action)
+		return true
+	}
+	return false
 }
