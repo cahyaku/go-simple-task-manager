@@ -84,7 +84,6 @@ func showMenuList() {
 	fmt.Println("3. Mark task as done")
 	fmt.Println("4. Delete task")
 	fmt.Println("5. Exit")
-	//fmt.Print("Enter your choice: ")
 }
 
 /**
@@ -128,8 +127,12 @@ func showTasks(tasks []Task) {
 	//}
 
 	// versi singkat, dijadikan sebiah func
-	if isEmptyTasks(tasks, "show") {
-		return
+	//if isEmptyTasks(tasks, "show") {
+	//	return
+	//}
+
+	if isEmptyTasks(tasks) {
+		fmt.Println("Empty task list, nothing to show")
 	}
 
 	fmt.Println("Task list:")
@@ -151,8 +154,12 @@ func markTaskAsDone(tasks *[]Task) {
 	//	return
 	//}
 
-	if isEmptyTasks(*tasks, "mark as done") {
-		return
+	//if isEmptyTasks(*tasks, "mark as done") {
+	//	return
+	//}
+
+	if isEmptyTasks(*tasks) {
+		fmt.Println("Empty task list, nothing to mark as done!")
 	}
 
 	fmt.Println("===== Mark task as done =====")
@@ -178,9 +185,10 @@ func markTaskAsDone(tasks *[]Task) {
 	if taskId > len(*tasks) || taskId <= 0 {
 		fmt.Println("Invalid task id, please try again.")
 		return
-	} else {
-		(*tasks)[taskId-1].Done = true
 	}
+
+	(*tasks)[taskId-1].Done = true
+
 	fmt.Println((*tasks)[taskId-1].Title, (*tasks)[taskId-1].Done)
 	fmt.Println("Task marked as done successfully ✔")
 }
@@ -191,8 +199,8 @@ func deleteTask(tasks *[]Task) {
 	//	return
 	//}
 
-	if isEmptyTasks(*tasks, "delete") {
-		return
+	if isEmptyTasks(*tasks) {
+		fmt.Println("Empty task list, nothing to delete!")
 	}
 
 	fmt.Println("===== Delete task =====")
@@ -225,12 +233,21 @@ func deleteTask(tasks *[]Task) {
 }
 
 /**
+ * Ini tidak boleh dilakukan karena menyalahi konsep Single Responsibility Principle (SRP)
+ * Karena return value-nya bool DAN JUGA melakukan printf().
+ * Artinya ia melakukan 2 hal sekaligus.
+ */
+//func isEmptyTasks(tasks []Task, action string) bool {
+//	if len(tasks) == 0 {
+//		fmt.Printf("Empty task list, nothing to %s!\n", action)
+//		return true
+//	}
+//	return false
+//}
+
+/**
  * Function to check whether there is data
  */
-func isEmptyTasks(tasks []Task, action string) bool {
-	if len(tasks) == 0 {
-		fmt.Printf("Empty task list, nothing to %s!\n", action)
-		return true
-	}
-	return false
+func isEmptyTasks(tasks []Task) bool {
+	return len(tasks) == 0
 }
